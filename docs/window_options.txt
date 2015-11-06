@@ -1,0 +1,7 @@
+title
+size
+window mode [windowed, fullscreen, exclusive fullscreen]
+sizable
+closable
+vsync
+default render system

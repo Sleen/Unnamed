@@ -6,7 +6,6 @@ set(UNNAMED_SRC
 	src/Configs.h
 	src/Main.cpp
 	src/OSXWindow.hpp
-	src/OSXWindow.mm
     src/Unnamed.hpp
     src/Window.cpp
     src/Window.hpp
@@ -33,7 +32,12 @@ set(UNNAMED_SRC
 	src/IO/Stream.cpp
 )
 
-include_directories(src)
+if (APPLE)
+	set(UNNAMED_SRC ${UNNAMED_SRC} src/OSXWindow.mm)
+
+endif ()
+
+include_directories(${UNNAMED_INC})
 
 add_definitions(-std=c++11)
 
@@ -43,3 +47,4 @@ set_target_properties(unnamed PROPERTIES
 	CLEAN_DIRECT_OUTPUT 1
 )
 source_group(src FILES ${UNNAMED_SRC})
+target_link_libraries(unnamed ${EXTERNAL_LIBRARIES})

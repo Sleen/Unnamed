@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <string>
 #include "Base/Exception.hpp"
 #include "Base/Event.hpp"

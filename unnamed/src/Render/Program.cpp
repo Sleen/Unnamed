@@ -54,15 +54,15 @@ namespace me {
 		glCheckErrors();
 
 		if (infoLogLength > 0) {
-			infoLog = (GLchar*)malloc(infoLogLength);
+			infoLog = new GLchar[infoLogLength];
 			if (infoLog == NULL) {
 				Log::E("ERROR: Cound not allocate InfoLog buffer");
-				exit(1);
+				return;
 			}
 			glGetShaderInfoLog(id, infoLogLength, &charsWritten, infoLog);
 			Log::I("Shader ID: %d\n", id);
 			Log::I("Log: %s\n\n", infoLog);
-			free(infoLog);
+			delete[] infoLog;
 		}
 		glCheckErrors();
 	}
@@ -164,14 +164,13 @@ namespace me {
 		glCheckErrors();
 
 		if (infoLogLength > 0) {
-			infoLog = (GLchar*)malloc(infoLogLength);
+			infoLog = new GLchar[infoLogLength];
 			if (infoLog == NULL) {
 				Log::E("ERROR: Cound not allocate InfoLog buffer");
-				exit(1);
 			}
 			glGetProgramInfoLog(prog, infoLogLength, &charsWritten, infoLog);
 			Log::I("Program InfoLog:\n%s\n", infoLog);
-			free(infoLog);
+			delete[] infoLog;
 		}
 		glCheckErrors();
 	}

@@ -1,6 +1,4 @@
-include_directories(
-    ${CMAKE_SOURCE_DIR}/unnamed/src
-)
+include_directories(${UNNAMED_INC})
 
 set(UNNAMED_LIBRARIES unnamed)
 

@@ -1,4 +1,7 @@
 #pragma once
+
+#include "Base/Event.hpp"
+
 #include <string>
 
 namespace unnamed {
@@ -189,6 +192,8 @@ struct KeyEvent {
 
 class Window {
 public:
+    me::Event<Window> Draw;
+    
 	Window(WindowOptions options) { options_ = options; }
 	virtual bool Create() = 0;
 	virtual void Run() = 0;

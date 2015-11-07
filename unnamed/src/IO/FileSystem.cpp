@@ -1,6 +1,10 @@
+#include "FileSystem.hpp"
+
+#include "Base/StringHelper.hpp"
+
 #include <algorithm>
 
-#ifdef _WIN32
+#ifdef __WIN32
 #	define WIN32_LEAN_AND_MEAN
 #	include <Windows.h>
 #	undef WIN32_LEAN_AND_MEAN
@@ -13,9 +17,6 @@
 #	include <dirent.h>
 #	include <sys/stat.h>
 #endif
-
-#include "FileSystem.hpp"
-#include "Base/StringHelper.hpp"
 
 namespace me {
 

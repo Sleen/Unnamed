@@ -9,7 +9,8 @@
 namespace unnamed {
 
 Application::Application() {
-	window_ = CreateWindow();
+	window_ = SetupWindow();
+    window_->Draw += [this](Window&){ OnDraw(); };
 }
 
 Application::~Application() {}
@@ -31,7 +32,7 @@ AppOptions* Application::Options() {
 	return options;
 }
     
-    Window* Application::CreateWindow() {
+    Window* Application::SetupWindow() {
 #ifdef __WIN32
         return new WinWindow(Options()->windowOptions);
 #elif defined __APPLE__

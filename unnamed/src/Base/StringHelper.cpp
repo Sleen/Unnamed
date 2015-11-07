@@ -1,5 +1,6 @@
 #include "StringHelper.hpp"
 
+#include <cstring>
 #include <algorithm>
 
 namespace me {

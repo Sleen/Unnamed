@@ -1,6 +1,7 @@
 #include "FileStream.hpp"
 
 #include <sys/stat.h>
+#include <cstdio>
 
 namespace me {
 

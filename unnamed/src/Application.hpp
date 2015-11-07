@@ -16,8 +16,9 @@ struct AppOptions {
         virtual AppOptions* Options();
         virtual void OnPause() {}
         virtual void OnResume() {}
+        virtual void OnDraw() {}
         virtual void Run();
-        virtual Window* CreateWindow();
+        virtual Window* SetupWindow();
         Window* GetWindow() { return window_; }
 
     private:

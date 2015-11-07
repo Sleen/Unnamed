@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <exception>
+#include <functional>
 
 #include "Base/Exception.hpp"
 #include "Base/StringHelper.hpp"

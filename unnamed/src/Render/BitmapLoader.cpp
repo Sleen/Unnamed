@@ -6,6 +6,11 @@
 #include "Base/System.hpp"
 #include "Base/StringHelper.hpp"
 
+#include <cmath>
+#include <cstdio>
+
+using namespace std;
+
 namespace me {
 
 	class BMPLoader : public BitmapLoader {
@@ -38,7 +43,7 @@ namespace me {
 
 	bool BMPLoader::Load(Stream& stream, unsigned& width, unsigned& height, GLubyte*& data) {
 		if (stream.RestSize() > 0) {
-			int64_t t = System::GetMicroSecond();
+			//int64_t t = System::GetMicroSecond();
 			BITMAPFILEHEADER fh;
 			BITMAPINFOHEADER ih;
 			fh = stream.Read<decltype(fh)>();
@@ -46,7 +51,7 @@ namespace me {
 
 			if (ih.biBitCount == 24 && ih.biCompression == 0) {
 				width = ih.biWidth;
-				height = abs(ih.biHeight);
+                height = abs(ih.biHeight);
 				int padding = ih.biSizeImage / height - width * 3;
 				int padding_buf;
 				GLubyte *d;

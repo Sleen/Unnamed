@@ -965,7 +965,9 @@ std::vector<String> String::Split(const String& chars, bool removeEmpty) const {
 }
 
 String String::Reverse() const {
-    
+    std::u32string s = Utf32String();
+    std::reverse((char32_t*)s.c_str(), (char32_t*)s.c_str() + s.length());
+    return String(s);
 }
 
 }

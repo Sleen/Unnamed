@@ -1,4 +1,6 @@
 set(UNNAMED_SRC
+    src/ConsoleApplication.cpp
+    src/ConsoleApplication.hpp
 	src/Application.cpp
 	src/Application.hpp
 	src/Configs.h

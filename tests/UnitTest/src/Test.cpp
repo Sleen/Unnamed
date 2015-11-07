@@ -9,4 +9,4 @@
 using namespace me;
 using namespace unnamed;
 
-Application unitTest;
+ConsoleApplication unitTest;

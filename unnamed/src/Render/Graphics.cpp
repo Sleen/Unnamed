@@ -215,8 +215,9 @@ void main(){
 			glDisable(GL_DEPTH_TEST);
 			glDisable(GL_CULL_FACE);
 
-			int width = unnamed::Application::GetInstance()->GetWindow()->GetWidth();
-			int height = unnamed::Application::GetInstance()->GetWindow()->GetHeight();
+            unnamed::Application* app = (unnamed::Application*)unnamed::Application::GetInstance();
+			int width = app->GetWindow()->GetWidth();
+			int height = app->GetWindow()->GetHeight();
 
 			std::cout<<"viewport: "<<width<<" x "<<height<<std::endl;
 

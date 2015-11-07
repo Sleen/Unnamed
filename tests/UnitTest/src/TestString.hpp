@@ -147,6 +147,14 @@ TEST("+") {
     CHECK((String() += 123) == String(123));
 }
 
+TEST("reverse") {
+    String s = the_little_prince_ch.Reverse();
+    CHECK(s.length() == the_little_prince_ch.length());
+    for (int i=0;i<s.length();i++) {
+        CHECK(s.CharAt(i) == the_little_prince_ch.CharAt(s.length() - i - 1));
+    }
+}
+
 TEST("SubString") {
     CHECK(String("").Substring(0) == String());
     CHECK(String("").Substring(2) == String());
@@ -201,6 +209,25 @@ TEST("trim") {
     CHECK(String(" 'hello, world.' ").Trim(String(" ,.'")) == String("hello, world"));
 }
 
+TEST("IndexOf") {
+    for (int i=0;i<the_little_prince_ch.length();i++) {
+        char32_t c = the_little_prince_ch.CharAt(i);
+        int index = the_little_prince_ch.IndexOf(c);
+        CHECK(index >= 0);
+        CHECK(index <= i);
+        CHECK(the_little_prince_ch.CharAt(index) == c);
+    }
+}
+
+TEST("LastIndexOf") {
+    for (int i=0;i<the_little_prince_ch.length();i++) {
+        char32_t c = the_little_prince_ch.CharAt(i);
+        int index = the_little_prince_ch.LastIndexOf(c);
+        CHECK(index >= i);
+        CHECK(the_little_prince_ch.CharAt(index) == c);
+    }
+}
+
 TEST("Replace") {
     CHECK(String("cbabcabc").Replace('a', 'b') == String("cbbbcabc"));
     CHECK(String("cbabcabc").ReplaceAll('a', 'b') == String("cbbbcbbc"));
@@ -252,8 +279,17 @@ BENCHMARK("check prefix & suffix    // static", 1000) {
     the_little_prince_ch.StartsWith(s);
 }
 
+BENCHMARK("construct", 1000) {
+    static std::string str = the_little_prince_ch.Utf8String();
+    String s(str);
+}
+
 BENCHMARK("copy", 1000) {
     String s(the_little_prince_ch);
+}
+
+BENCHMARK("reverse", 1000) {
+    String s = the_little_prince_ch.Reverse();
 }
 
 BENCHMARK("+", 1000) {
@@ -281,6 +317,19 @@ BENCHMARK("IndexOf      // reuse the pattern", 1000) {
 
 BENCHMARK("IndexOf      // single character", 1000) {
     the_little_prince_ch.IndexOf(u'球');
+}
+
+BENCHMARK("LastIndexOf", 1000) {
+    the_little_prince_ch.LastIndexOf(String("测试他"));
+}
+
+BENCHMARK("LastIndexOf  // reuse the pattern", 1000) {
+    static String s("测试他");
+    the_little_prince_ch.LastIndexOf(s);
+}
+
+BENCHMARK("LastIndexOf  // single character", 1000) {
+    the_little_prince_ch.LastIndexOf(u'球');
 }
 
 BENCHMARK("replace all", 1000) {

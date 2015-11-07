@@ -10,9 +10,6 @@
 #include "Base/StringHelper.hpp"
 #include "Base/Log.hpp"
 #include "Base/System.hpp"
-#include "String.hpp"
-
-using namespace unnamed;
 
 namespace me {
 
@@ -212,13 +209,13 @@ namespace me {
 	};
         
 	Test::Test(Tests* tests, const std::string& name, std::function<void()> fun) {
-		this->name = String(name).Trim(String("\" ")).Utf8String();
+        this->name = StringHelper::Trim(name, " \"");
 		this->fun = fun;
 		tests->AddTest(this);
 	}
         
     Benchmark::Benchmark(Tests* tests, const std::string& name, size_t iterations, std::function<void()> fun) {
-        this->name = String(name).Trim(String("\" ")).Utf8String();
+        this->name = StringHelper::Trim(name, " \"");
         this->fun = fun;
         this->iterations = iterations;
         tests->AddBenchmark(this);

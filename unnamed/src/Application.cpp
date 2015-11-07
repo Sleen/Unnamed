@@ -5,27 +5,12 @@
 
 namespace unnamed {
 
-static Application* instance = nullptr;
-
 Application::Application() {
-	instance = this;
 	window_ = Window::New(Options()->windowOptions);
 }
 
 Application::~Application() {}
 
-Application* Application::GetInstance() {
-	return instance;
-}
-
-void Application::Exit() {
-	OnExit();
-	exit(0);
-}
-void Application::OnStart() {}
-void Application::OnExit() {}
-void Application::OnPause() {}
-void Application::OnResume() {}
 void Application::Run() {
 	if (window_->Create()) {
 		window_->Run();

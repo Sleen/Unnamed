@@ -189,8 +189,6 @@ struct KeyEvent {
 
 class Window {
 public:
-    static Window* New(WindowOptions options);
-
 	Window(WindowOptions options) { options_ = options; }
 	virtual bool Create() = 0;
 	virtual void Run() = 0;

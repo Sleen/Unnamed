@@ -1,13 +1,14 @@
 #ifdef __APPLE__
 
 #import "OSXWindow.hpp"
-#import <Carbon/Carbon.h>
+
+#include "Render/Graphics.hpp"
+#include "Math/Math.hpp"
 
 #include <OpenGL/gl.h>
 
-#include "Render/Graphics.hpp"
-
-#include "Math/Math.hpp"
+#import  <Cocoa/Cocoa.h>
+#import  <Carbon/Carbon.h>
 
 #define CHECK_MASK(value, mask) (((value) & (mask)) == (mask))
 
@@ -479,7 +480,7 @@ void test() {
 }
 
 - (void)windowWillClose:(NSNotification*)notification {
-    [window_->app_ stop:self];
+    [[NSApplication sharedApplication] stop:self];
 }
 
 KeyEvent getKeyEvent(NSEvent* event) {
@@ -661,57 +662,66 @@ MouseEvent getMouseEvent(NSView* view, NSEvent* event, MouseButton button, Mouse
 
 namespace unnamed {
 
-Window* Window::New(WindowOptions options) {
-    return new OSXWindow(options);
+struct OSXWindowContext {
+    NSWindow* window = nullptr;
+};
+
+OSXWindow::OSXWindow(WindowOptions options) : Window(options) {
+    context_ = new OSXWindowContext();
+}
+
+OSXWindow::~OSXWindow() {
+    if (context_) {
+        delete context_;
+    }
 }
 
 bool OSXWindow::Create() {
     @autoreleasepool {
-        app_ = [NSApplication sharedApplication];
-
         NSRect rect = NSMakeRect(0, 0, options_.width, options_.height);
         GLView *view = [[GLView alloc] initWithFrame:rect window:this];
         if (!view) {
             return false;
         }
 
-        window_ = [[NSWindow alloc]
+        NSWindow *window = [[NSWindow alloc]
                       initWithContentRect:rect
                       styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask
                       backing:NSBackingStoreBuffered
                       defer:NO];
         
         if (options_.fullscreen) {
-            [window_ toggleFullScreen:nil];
+            [context_->window toggleFullScreen:nil];
         }
         
-        window_.acceptsMouseMovedEvents = YES;
-        window_.contentView = view;
-        window_.title = [NSString stringWithUTF8String:options_.title.c_str()];
-        window_.delegate = view;
-        [window_ center];
-        [window_ makeKeyAndOrderFront:nil];
-        app_.delegate = view;
+        window.acceptsMouseMovedEvents = YES;
+        window.contentView = view;
+        window.title = [NSString stringWithUTF8String:options_.title.c_str()];
+        window.delegate = view;
+        [window center];
+        [window makeKeyAndOrderFront:nil];
+        [NSApplication sharedApplication].delegate = view;
+        context_->window = window;
     }
 
     return true;
 }
 
 void OSXWindow::Run() {
-    [app_ run];
+    [[NSApplication sharedApplication] run];
     OnClosed();
 }
 
 void OSXWindow::Close() {
-    [window_ close];
+    [context_->window close];
 }
 
 int OSXWindow::GetWidth() {
-    return window_.contentView.frame.size.width*2;
+    return context_->window.contentView.frame.size.width*2;
 }
 
 int OSXWindow::GetHeight() {
-    return window_.contentView.frame.size.height*2;
+    return context_->window.contentView.frame.size.height*2;
 }
 
 }

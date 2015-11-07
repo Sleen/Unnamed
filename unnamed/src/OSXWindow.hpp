@@ -1,24 +1,25 @@
 #pragma once
+
 #ifdef __APPLE__
 
 #include "Window.hpp"
 
-#include <Cocoa/Cocoa.h>
-
 namespace unnamed {
 
+struct OSXWindowContext;
+    
 class OSXWindow : public Window {
 public:
-	OSXWindow(WindowOptions options) : Window(options) { }
-	bool Create();
-	void Run();
-	void Close();
-    int GetWidth();
-    int GetHeight();
+    OSXWindow(WindowOptions options);
+    virtual ~OSXWindow();
+	bool Create() override;
+	void Run() override;
+	void Close() override;
+    int GetWidth() override;
+    int GetHeight() override;
 
-//private:
-	NSApplication* app_ = nullptr;
-	NSWindow* window_ = nullptr;
+private:
+    OSXWindowContext* context_ = nullptr;
 };
 
 }

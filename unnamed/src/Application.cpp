@@ -1,12 +1,15 @@
 #include "Application.hpp"
 
+#include "WinWindow.hpp"
+#include "OSXWindow.hpp"
+
 #include <cstdlib>
 #include <iostream>
 
 namespace unnamed {
 
 Application::Application() {
-	window_ = Window::New(Options()->windowOptions);
+	window_ = CreateWindow();
 }
 
 Application::~Application() {}
@@ -27,5 +30,13 @@ AppOptions* Application::Options() {
 	}
 	return options;
 }
+    
+    Window* Application::CreateWindow() {
+#ifdef __WIN32
+        return new WinWindow(Options()->windowOptions);
+#elif defined __APPLE__
+        return new OSXWindow(Options()->windowOptions);
+#endif
+    }
 
 }

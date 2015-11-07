@@ -7,9 +7,11 @@ set(UNNAMED_SRC
 	src/Main.cpp
 	src/OSXWindow.hpp
 	src/OSXWindow.mm
-	src/Unnamed.hpp
-	src/Window.cpp
-	src/Window.hpp
+    src/Unnamed.hpp
+    src/Window.cpp
+    src/Window.hpp
+	src/WinWindow.cpp
+	src/WinWindow.hpp
 	src/String.cpp
 	src/String.hpp
 	src/Base/Log.cpp

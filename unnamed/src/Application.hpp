@@ -17,9 +17,10 @@ struct AppOptions {
         virtual void OnPause() {}
         virtual void OnResume() {}
         virtual void Run();
+        virtual Window* CreateWindow();
         Window* GetWindow() { return window_; }
 
-    protected:
+    private:
         Window* window_;
     };
 

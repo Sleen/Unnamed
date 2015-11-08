@@ -5,18 +5,11 @@
 
 namespace unnamed {
 
-enum class StringEncoding {
-    Utf8,
-    Utf16,
-    Utf32,
-    Ansi
-};
-
 class String {
 public:
     String() {}
-    explicit String(const char* str, StringEncoding encoding = StringEncoding::Utf8);
-    explicit String(const std::string& str, StringEncoding encoding = StringEncoding::Utf8) : String(str.c_str(), encoding) {}
+    explicit String(const char* str);
+    explicit String(const std::string& str) : String(str.c_str()) {}
     explicit String(const char16_t* str);
     explicit String(const std::u16string& str) : String(str.c_str()) {}
     explicit String(const char32_t* str);

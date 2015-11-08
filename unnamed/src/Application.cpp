@@ -2,6 +2,7 @@
 
 #include "WinWindow.hpp"
 #include "OSXWindow.hpp"
+#include "Time.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -10,7 +11,8 @@ namespace unnamed {
 
 Application::Application() {
 	window_ = SetupWindow();
-    window_->Draw += [this](Window&){ OnDraw(); };
+    window_->Draw += [this](Window&) { Time::UpdateTime(); OnDraw(); };
+    window_->Prepare += [this](Window&){ OnPrepare(); };
 }
 
 Application::~Application() {}
@@ -33,7 +35,7 @@ AppOptions* Application::Options() {
 }
     
     Window* Application::SetupWindow() {
-#ifdef __WIN32
+#ifdef _WIN32
         return new WinWindow(Options()->windowOptions);
 #elif defined __APPLE__
         return new OSXWindow(Options()->windowOptions);

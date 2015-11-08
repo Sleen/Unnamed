@@ -13,6 +13,8 @@ set(UNNAMED_SRC
 	src/WinWindow.hpp
 	src/String.cpp
 	src/String.hpp
+    src/Time.cpp
+    src/Time.hpp
 	src/Base/Log.cpp
 	src/Base/StringHelper.cpp
 	src/Base/System.cpp
@@ -37,8 +39,6 @@ if (APPLE)
 
 endif ()
 
-include_directories(${UNNAMED_INC})
-
 add_definitions(-std=c++11)
 
 add_library(unnamed STATIC ${UNNAMED_SRC})
@@ -47,4 +47,4 @@ set_target_properties(unnamed PROPERTIES
 	CLEAN_DIRECT_OUTPUT 1
 )
 source_group(src FILES ${UNNAMED_SRC})
-target_link_libraries(unnamed ${EXTERNAL_LIBRARIES})
+target_link_libraries(unnamed ${EXTERNAL_LIBS})

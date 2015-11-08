@@ -193,6 +193,7 @@ struct KeyEvent {
 class Window {
 public:
     me::Event<Window> Draw;
+    me::Event<Window> Prepare;
     
 	Window(WindowOptions options) { options_ = options; }
 	virtual bool Create() = 0;
@@ -204,6 +205,7 @@ public:
 	virtual void OnKeyEvent(const KeyEvent& event) {}
     virtual int GetWidth() = 0;
     virtual int GetHeight() = 0;
+    virtual void SetTitle(const std::string& title) = 0;
 
 protected:
 	WindowOptions options_;

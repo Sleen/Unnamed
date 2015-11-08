@@ -1,4 +1,4 @@
-#include "UnitTest.hpp"
+﻿#include "UnitTest.hpp"
 #include "Base/StringHelper.hpp"
 #include "String.hpp"
 
@@ -77,7 +77,7 @@ TEST("constructor") {
     CHECK_NO_THROW(String(""));
     CHECK_NO_THROW(String(u""));
     CHECK_NO_THROW(String(U""));
-    CHECK_NO_THROW(String("1234一二三四"));
+    CHECK_NO_THROW(String(u8"1234一二三四"));
     CHECK_NO_THROW(String(u"1234一二三四"));
     CHECK_NO_THROW(String(U"1234一二三四"));
     CHECK_NO_THROW(String(String()));
@@ -86,12 +86,12 @@ TEST("constructor") {
 TEST("length") {
     CHECK(String().length() == 0);
     CHECK(String(123).length() == 3);
-    CHECK(String("一二三").length() == 3);
+    CHECK(String(u8"一二三").length() == 3);
     CHECK(String(U'🀅').length() == 1);
 }
 
 TEST("CharAt") {
-    String s("一2🀅a");
+    String s(u8"一2🀅a");
     CHECK(s.CharAt(0) == U'一');
     CHECK(s.CharAt(1) == U'2');
     CHECK(s.CharAt(2) == U'🀅');
@@ -100,9 +100,9 @@ TEST("CharAt") {
 }
 
 TEST("cast to std string") {
-    CHECK(String("一2🀅a").Utf8String() == "一2🀅a");
-    CHECK(String("一2🀅a").Utf16String() == u"一2🀅a");
-    CHECK(String("一2🀅a").Utf32String() == U"一2🀅a");
+    CHECK(String(u8"一2🀅a").Utf8String() == u8"一2🀅a");
+    CHECK(String(u8"一2🀅a").Utf16String() == u"一2🀅a");
+    CHECK(String(u8"一2🀅a").Utf32String() == U"一2🀅a");
     CHECK(String().Utf8String() == "");
     CHECK(String().Utf16String() == u"");
     CHECK(String().Utf32String() == U"");
@@ -121,9 +121,9 @@ TEST("Swap") {
 TEST("comparation") {
     CHECK(String() == String());
     CHECK(String() == String(""));
-    CHECK(String("一2🀅a") == String("一2🀅a"));
+    CHECK(String(u8"一2🀅a") == String(u8"一2🀅a"));
     CHECK(String("123456") != String("12345"));
-    String s("一2🀅a");
+    String s(u8"一2🀅a");
     CHECK(s == s);
 }
 
@@ -132,9 +132,9 @@ TEST("from values") {
     CHECK(String(123.456) == String("123.456"));
     CHECK(String(true) == String("true"));
     CHECK(String('a') == String("a"));
-    CHECK(String(u'一') == String("一"));
-    CHECK(String(U'🀅') == String("🀅"));
-    CHECK(String(U"一🀅a") == String("一🀅a"));
+    CHECK(String(u'一') == String(u8"一"));
+    CHECK(String(U'🀅') == String(u8"🀅"));
+    CHECK(String(U"一🀅a") == String(u8"一🀅a"));
 }
 
 TEST("+") {
@@ -189,8 +189,8 @@ TEST("check prefix & suffix") {
 
 TEST("change case") {
     CHECK(String("abc").ToUpper() == String("ABC"));
-    CHECK(String("一🀅aB").ToUpper() == String("一🀅AB"));
-    CHECK(String("一🀅aB").ToLower() == String("一🀅ab"));
+    CHECK(String(u8"一🀅aB").ToUpper() == String(u8"一🀅AB"));
+    CHECK(String(u8"一🀅aB").ToLower() == String(u8"一🀅ab"));
 }
 
 TEST("trim") {
@@ -236,17 +236,17 @@ TEST("Replace") {
 }
 
 TEST("Split") {
-    String s(",a,一二，,123,");
-    auto r = s.Split(String(",，"), true);
+    String s(u8",a,一二，,123,");
+    auto r = s.Split(String(u8",，"), true);
     CHECK(r.size() == 3);
     CHECK(r[0] == String("a"));
-    CHECK(r[1] == String("一二"));
+    CHECK(r[1] == String(u8"一二"));
     CHECK(r[2] == String("123"));
     r = s.Split(',');
     CHECK(r.size() == 5);
     CHECK(r[0] == String(""));
     CHECK(r[1] == String("a"));
-    CHECK(r[2] == String("一二，"));
+    CHECK(r[2] == String(u8"一二，"));
     CHECK(r[3] == String("123"));
     CHECK(r[4] == String(""));
 }
@@ -270,12 +270,12 @@ BENCHMARK("CharAt       // descending iteration", 1000) {
 }
 
 BENCHMARK("check prefix & suffix", 1000) {
-    String s("	当我还只有六岁的时候，在一本描写原始森林的名叫《真实的故事》的书中，看到了一副精彩的插画，画的是一条蟒蛇正在吞食一只大野兽。页头上就是那副画的摹本。");
+    String s(u8"	当我还只有六岁的时候，在一本描写原始森林的名叫《真实的故事》的书中，看到了一副精彩的插画，画的是一条蟒蛇正在吞食一只大野兽。页头上就是那副画的摹本。");
     the_little_prince_ch.StartsWith(s);
 }
 
 BENCHMARK("check prefix & suffix    // static", 1000) {
-    static String s("	当我还只有六岁的时候，在一本描写原始森林的名叫《真实的故事》的书中，看到了一副精彩的插画，画的是一条蟒蛇正在吞食一只大野兽。页头上就是那副画的摹本。");
+    static String s(u8"	当我还只有六岁的时候，在一本描写原始森林的名叫《真实的故事》的书中，看到了一副精彩的插画，画的是一条蟒蛇正在吞食一只大野兽。页头上就是那副画的摹本。");
     the_little_prince_ch.StartsWith(s);
 }
 
@@ -307,11 +307,11 @@ BENCHMARK("trim", 1000) {
 }
 
 BENCHMARK("IndexOf", 1000) {
-    the_little_prince_ch.IndexOf(String("测试他"));
+    the_little_prince_ch.IndexOf(String(u8"测试他"));
 }
 
 BENCHMARK("IndexOf      // reuse the pattern", 1000) {
-    static String s("测试他");
+    static String s(u8"测试他");
     the_little_prince_ch.IndexOf(s);
 }
 
@@ -320,11 +320,11 @@ BENCHMARK("IndexOf      // single character", 1000) {
 }
 
 BENCHMARK("LastIndexOf", 1000) {
-    the_little_prince_ch.LastIndexOf(String("测试他"));
+    the_little_prince_ch.LastIndexOf(String(u8"测试他"));
 }
 
 BENCHMARK("LastIndexOf  // reuse the pattern", 1000) {
-    static String s("测试他");
+    static String s(u8"测试他");
     the_little_prince_ch.LastIndexOf(s);
 }
 
@@ -333,7 +333,7 @@ BENCHMARK("LastIndexOf  // single character", 1000) {
 }
 
 BENCHMARK("replace all", 1000) {
-    the_little_prince_ch.ReplaceAll(String("他们"), String("They"));
+    the_little_prince_ch.ReplaceAll(String(u8"他们"), String("They"));
 }
 
 BENCHMARK("replace all massive", 1) {
@@ -368,7 +368,7 @@ String the_little_prince_en {R"(    Once when I was six years old I saw a magnif
         
     Then I would never talk to that person about boa constrictors, or primeval forests, or stars. I would bring myself down to his level. I would talk to him about bridge, and golf, and politics, and neckties. And the grown-up would be greatly pleased to have met such a sensible man.)"};
 
-String the_little_prince_ch {R"(	当我还只有六岁的时候，在一本描写原始森林的名叫《真实的故事》的书中，看到了一副精彩的插画，画的是一条蟒蛇正在吞食一只大野兽。页头上就是那副画的摹本。
+String the_little_prince_ch {u8R"(	当我还只有六岁的时候，在一本描写原始森林的名叫《真实的故事》的书中，看到了一副精彩的插画，画的是一条蟒蛇正在吞食一只大野兽。页头上就是那副画的摹本。
 
 	这本书中写道：“这些蟒蛇把它们的猎获物不加咀嚼地囫囵吞下，尔后就不能再动弹了；它们就在长长的六个月的睡眠中消化这些食物。”
 

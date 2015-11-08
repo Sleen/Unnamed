@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef __WIN32
+#ifdef _WIN32
 
 #include "Window.hpp"
 
@@ -16,6 +16,7 @@ namespace unnamed {
         void Close() override;
         int GetWidth() override;
         int GetHeight() override;
+        void SetTitle(const std::string& title) override;
 
     private:
         HWND hwnd_ = nullptr;

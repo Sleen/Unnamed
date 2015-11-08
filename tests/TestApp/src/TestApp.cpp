@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <iomanip>
 #include <cmath>
 
@@ -9,6 +9,11 @@
 #include "Render/GL.hpp"
 #include "Render/Program.hpp"
 #include "Render/Transform.hpp"
+#include "Time.hpp"
+
+#include <iostream>
+#include <locale>
+#include <codecvt>
 
 using namespace me;
 using namespace unnamed;
@@ -27,26 +32,9 @@ public:
 	TestApp() {}
 	~TestApp() {}
     
-	void OnStart() {
-		std::cout<<"OnStart"<<std::endl;
-        
-        dump(String(1));
-        dump(String((int8_t)1));
-        dump(String((uint8_t)1));
-        dump(String('1'));
-        dump(String(String("123")==String("12")+"3"));
-        dump(String(String("123")==String("1234")));
-        dump(String(String("12345").StartsWith(String("1234"))));
-        dump(String(String("12345") == String(1123456).Substring(1, 5)));
-        dump(String("   ").Trim());
-        std::cout<<String("abcdef").IndexOf('c')<<std::endl;
-        std::cout<<String("123测试文字").IndexOf(U'文')<<std::endl;
-        std::cout<<String("aabbababaaababbba").IndexOf(String("aab"), 1)<<std::endl;
+	void OnPrepare() {
+        prepareShader();
 	}
-    
-	void OnExit() {
-        std::cout<<"OnExit"<<std::endl;
-    }
     
     void OnDraw() {
         //    Graphics g;
@@ -54,6 +42,8 @@ public:
         //    g.DrawLine(Color::Green, Vector2(10, 10), Vector2(100, 100));
         //    g.FillOval(Color::Blue, 500, 20, 300, 200);
         
+        GetWindow()->SetTitle(std::to_string(Time::FPS()));
+
         test();
         glCheckErrors();
     }
@@ -126,7 +116,7 @@ public:
         return loc;
     }
     
-    void test() {
+    void prepareShader() {
         const char* vertexShader = R"(
         
         uniform mat4 uMvp;
@@ -145,7 +135,7 @@ public:
         varying vec3 vPosition;
         
         void main() {
-            gl_FragColor = vec4(1.0, mod(vPosition.x/100.0, 1.0), mod(vPosition.y/100.0, 1.0), mod(vPosition.y/100.0, 1.0));
+            gl_FragColor = vec4(1.0, mod(vPosition.x/100.0, 1.0), mod(vPosition.y/100.0, 1.0), 1.0);
         }
         
         )";
@@ -194,7 +184,9 @@ public:
         glUseProgram(program);
         // get location of uniforms
         GLint uMvp = getUniLoc(program, "uMvp");
-        
+    }
+    GLint uMvp;
+    void test() {
         glUniformMatrix4fv(uMvp, 1, false, MVPMatrix());
         
         glEnableVertexAttribArray(POSITION_ATTRIB_LOC);

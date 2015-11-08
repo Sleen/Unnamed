@@ -8,47 +8,45 @@
 
 namespace unnamed {
 
-String::String(const char* str, StringEncoding encoding) {
-    if (encoding == StringEncoding::Utf8) {
-        byteLength_ = strlen(str);
-        data_ = new char[byteLength_ + 1];
-        memcpy(data_, str, byteLength_ + 1);
-        int n = 0;
-        for (int i=0;i<byteLength_;i++) {
-            char c = data_[i];
-            if (n > 0) {
-                if (((c >> 6) & 0x03) != 0x02) { // ! 10xxxxxx
-                    // error
-                    printf("'%s' is not a valid utf8 string\n", str);
-                    return;
-                }
-                n--;
-            } else {
-                length_++;
-                if (((c >> 7) & 0x01) == 0x00) {		// 0xxxxxxx
+String::String(const char* str) {
+    byteLength_ = strlen(str);
+    data_ = new char[byteLength_ + 1];
+    memcpy(data_, str, byteLength_ + 1);
+    int n = 0;
+    for (int i=0;i<byteLength_;i++) {
+        char c = data_[i];
+        if (n > 0) {
+            if (((c >> 6) & 0x03) != 0x02) { // ! 10xxxxxx
+                // error
+                printf("'%s' is not a valid utf8 string\n", str);
+                return;
+            }
+            n--;
+        } else {
+            length_++;
+            if (((c >> 7) & 0x01) == 0x00) {		// 0xxxxxxx
                     
-                } else if (((c >> 5) & 0x07) == 0x06) {	// 110xxxxx
-                    n = 1;
-                } else if (((c >> 4) & 0x0F) == 0x0E) {	// 1110xxxx
-                    n = 2;
-                } else if (((c >> 3) & 0x1F) == 0x1E) {	// 11110xxx
-                    n = 3;
-                } else if (((c >> 2) & 0x3F) == 0x3E) {	// 111110xx
-                    n = 4;
-                } else if (((c >> 1) & 0x7F) == 0x7E) {	// 1111110x
-                    n = 5;
-                } else {
-                    // error
-                    printf("'%s' is not a valid utf8 string\n", str);
-                    return;
-                }
+            } else if (((c >> 5) & 0x07) == 0x06) {	// 110xxxxx
+                n = 1;
+            } else if (((c >> 4) & 0x0F) == 0x0E) {	// 1110xxxx
+                n = 2;
+            } else if (((c >> 3) & 0x1F) == 0x1E) {	// 11110xxx
+                n = 3;
+            } else if (((c >> 2) & 0x3F) == 0x3E) {	// 111110xx
+                n = 4;
+            } else if (((c >> 1) & 0x7F) == 0x7E) {	// 1111110x
+                n = 5;
+            } else {
+                // error
+                printf("'%s' is not a valid utf8 string\n", str);
+                return;
             }
         }
-        if (n > 0) {
-            // error
-            printf("'%s' is not a valid utf8 string\n", str);
-            return;
-        }
+    }
+    if (n > 0) {
+        // error
+        printf("'%s' is not a valid utf8 string\n", str);
+        return;
     }
 }
 
@@ -695,7 +693,7 @@ String operator+(char32_t lh, const String& rh) {
 }
     
 const String& String::BlankCharacters() {
-    static String chars(" \t\n\r\u3000\v\f\u00A0\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u200C\u200D\u2028\u2029\u202F\u205F\u2060\uFEFF");
+    static String chars(u8" \t\n\r\u3000\v\f\u00A0\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u200C\u200D\u2028\u2029\u202F\u205F\u2060\uFEFF");
     return chars;
 }
 

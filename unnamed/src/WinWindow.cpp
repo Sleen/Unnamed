@@ -1,4 +1,4 @@
-#ifdef __WIN32
+#ifdef _WIN32
 
 #include "WinWindow.hpp"
 
@@ -35,20 +35,21 @@ namespace unnamed {
         wc.lpszMenuName = NULL;
         wc.lpszClassName = options_.title.c_str();
 
+        BOOL result = SetProcessDPIAware();
+        if (!result) {
+            Log::W("SetProcessDPIAware failed!");
+        }
+
         int titleHeight = GetSystemMetrics(SM_CYCAPTION);
-        int borderWidth = GetSystemMetrics(SM_CXFRAME);
-        int borderHeight = GetSystemMetrics(SM_CYFRAME);
+        int paddedBorderWidth = GetSystemMetrics(SM_CXPADDEDBORDER);
+        int borderWidth = GetSystemMetrics(SM_CXFRAME) + paddedBorderWidth;
+        int borderHeight = GetSystemMetrics(SM_CYFRAME) + paddedBorderWidth;
         int screenWidth = GetSystemMetrics(SM_CXSCREEN);
         int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-        // if (System::Major >= 7){
-            borderWidth *= 2;
-            borderHeight *= 2;
-        // }
-
         width_ = options_.width;
         height_ = options_.height;
-        borderWidth_ = borderWidth_ * 2;
+        borderWidth_ = borderWidth * 2;
         borderHeight_ = borderHeight * 2 + titleHeight;
         int width = width_ + borderWidth_;
         int height = height_ + borderHeight_;
@@ -99,20 +100,22 @@ namespace unnamed {
             Log::E("GLEW Error: %s", glewGetErrorString(err));
         }
 
-        //wglSwapIntervalEXT(0);
+        Prepare(*this);
+
+        wglSwapIntervalEXT(0);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glClearColor(0, 0, 0, 0);
     
-        Viewport(0, 0, width_, height_);
+        /*Viewport(0, 0, width_, height_);
         Log::I("viewport %d x %d", width_, height_);
 
         MatrixMode(PROJECTION_MATRIX);
         LoadIdentity();
         Ortho(0, width_, height_, 0, -1, 1);
         MatrixMode(MODELVIEW_MATRIX);
-        LoadIdentity();
+        LoadIdentity();*/
 
         return true;
     }
@@ -141,7 +144,7 @@ namespace unnamed {
             }
         }
         else{
-            SendMessage(hwnd_, WM_PAINT, 0, 0);
+            //SendMessage(hwnd_, WM_PAINT, 0, 0);
         }
 
         OnClosed();
@@ -157,6 +160,10 @@ namespace unnamed {
     
     int WinWindow::GetHeight() {
         return height_;
+    }
+
+    void WinWindow::SetTitle(const std::string& title) {
+        SetWindowText(window->hwnd_, title.c_str());
     }
 
     LRESULT CALLBACK WinWindow::WndProc_Static(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp){
@@ -176,11 +183,10 @@ namespace unnamed {
             PostQuitMessage(0);
             break;
         case WM_CREATE:
-            //SendMessage(hwnd, WM_PAINT, 0, 0);
+            SendMessage(hwnd, WM_PAINT, 0, 0);
             break;
         case WM_PAINT:
             if (shown_){
-                Log::D("Paint");
                 wglMakeCurrent(hdc_, rc_);
                 PushMatrix();
                 glClear(GL_COLOR_BUFFER_BIT);
@@ -195,10 +201,21 @@ namespace unnamed {
         case WM_SIZE:
             //wglMakeCurrent(hdc, rc);
             //OnResize(Vector2(LOWORD(lp), HIWORD(lp)));
+            width_ = LOWORD(lp);
+            height_ = HIWORD(lp);
+
+            Viewport(0, 0, width_, height_);
+            Log::I("viewport %d x %d", width_, height_);
+
+            MatrixMode(PROJECTION_MATRIX);
+            LoadIdentity();
+            Ortho(0, width_, height_, 0, -1, 1);
+            MatrixMode(MODELVIEW_MATRIX);
+            LoadIdentity();
             break;
         case WM_SIZING:
         {
-            auto rect = (LPRECT)lp;
+           /* auto rect = (LPRECT)lp;
             width_ = rect->right - rect->left - borderWidth_;
             height_ = rect->bottom - rect->top - borderHeight_;
 
@@ -209,11 +226,7 @@ namespace unnamed {
             LoadIdentity();
             Ortho(0, width_, height_, 0, -1, 1);
             MatrixMode(MODELVIEW_MATRIX);
-            LoadIdentity();
-            // int width = rect->right - rect->left - border.GetWidth();
-            // int height = rect->bottom - rect->top - border.GetHeight();
-            // cout << "Resizing: " << width << ", " << height << endl;
-            // OnResize(Vector2(width, height));
+            LoadIdentity();*/
             break;
         }
         case WM_ERASEBKGND:
@@ -271,9 +284,9 @@ namespace unnamed {
         //     OnMouseEvent(MouseEventArgs((short)LOWORD(lp),
         //         (short)HIWORD(lp), MouseButton::Middle, MouseAction::Up));
         //     break;
+        default:
+            return DefWindowProc(hwnd, msg, wp, lp);
         }
-
-        return DefWindowProc(hwnd, msg, wp, lp);
     }
 
 }

@@ -1,7 +1,7 @@
 set(NAME TestApp)
 set(SRC src/TestApp.cpp)
 add_executable(${NAME} MACOSX_BUNDLE ${SRC})
-target_link_libraries(${NAME} unnamed ${EXTERNAL_LIBRARIES})
+target_link_libraries(${NAME} unnamed ${EXTERNAL_LIBS})
 if(APPLE)
 	set(LINKER_FLAGS "-framework Cocoa -framework OpenGL")
 	set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${LINKER_FLAGS}")

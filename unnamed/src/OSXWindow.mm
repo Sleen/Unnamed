@@ -1,6 +1,6 @@
 #ifdef __APPLE__
 
-#import "OSXWindow.hpp"
+#include "OSXWindow.hpp"
 
 #include "Render/Graphics.hpp"
 #include "Math/Math.hpp"
@@ -261,37 +261,60 @@ Keys getKey(int keyCode) {
 - (instancetype)initWithFrame:(CGRect)bounds window:(OSXWindow*)window {
     if (self = [super initWithFrame:bounds]) {
         window_ = window;
+        
+        NSOpenGLPixelFormatAttribute attrs[] = {
+            NSOpenGLPFADoubleBuffer,
+            NSOpenGLPFADepthSize, 24,
+            0
+        };
+        
+        NSOpenGLPixelFormat *pf = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
+        
+        if (!pf) {
+            Log::W("failed to init the specified pixel format, use default value");
+            return self;
+        }
+        
+        self.pixelFormat = pf;
+        self.openGLContext = [[NSOpenGLContext alloc] initWithFormat:pf shareContext:nil];
     }
     return self;
 }
 
 - (void)prepareOpenGL {
-    NSLog(@"prepareOpenGL");
     [super prepareOpenGL];
-    [[self openGLContext] makeCurrentContext];
+    
+    [self.openGLContext makeCurrentContext];
     [self setWantsBestResolutionOpenGLSurface:YES];
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0, 0, 0, 0);
     
-    Graphics::Init();
+    // vsync
+    [self.openGLContext setValues:(GLint[]){0} forParameter:NSOpenGLCPSwapInterval];
+    
+    window_->Prepare(*window_);
+    
+    NSTimer *renderTimer = [NSTimer timerWithTimeInterval:0.0001
+                                          target:self
+                                        selector:@selector(redraw:)
+                                        userInfo:nil
+                                         repeats:YES];
+    
+    [[NSRunLoop currentRunLoop] addTimer:renderTimer forMode:NSDefaultRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer:renderTimer forMode:NSEventTrackingRunLoopMode];
+}
+
+- (void)redraw:(id)sender {
+    self.needsDisplay = YES;
 }
 
 - (void)reshape {
-    NSLog(@"reshape %.1f x %.1f", self.frame.size.width, self.frame.size.height);
     [super reshape];
-
+    
     NSRect rect = [self convertRectToBacking:[self bounds]];
-    // glViewport(0, 0, rect.size.width, rect.size.height);
-    // NSLog(@"glViewport %.1f x %.1f", rect.size.width, rect.size.height);
-
-    // glMatrixMode(GL_PROJECTION_MATRIX);
-    // glLoadIdentity();
-    // glOrtho(0, rect.size.width, rect.size.height, 0, 0.1, 1000);
-    // glMatrixMode(GL_MODELVIEW_MATRIX);
-    // glLoadIdentity();
-
+    
     Viewport(0, 0, rect.size.width, rect.size.height);
     NSLog(@"viewport %.1f x %.1f", rect.size.width, rect.size.height);
 
@@ -302,21 +325,15 @@ Keys getKey(int keyCode) {
     LoadIdentity();
 }
 
-- (void)update {
-    NSLog(@"update");
-    [super update];
-}
-
 - (void)drawRect:(NSRect)rect {
-    NSLog(@"drawRect");
-    [[self openGLContext] makeCurrentContext];
+    [self.openGLContext makeCurrentContext];
     PushMatrix();
     glClear(GL_COLOR_BUFFER_BIT);
-
+    
     window_->Draw(*window_);
     
     PopMatrix();
-    glFlush();
+    [self.openGLContext flushBuffer];
 }
 
 - (BOOL)acceptsFirstResponder {
@@ -570,6 +587,10 @@ int OSXWindow::GetWidth() {
 
 int OSXWindow::GetHeight() {
     return context_->window.contentView.frame.size.height*2;
+}
+
+void OSXWindow::SetTitle(const std::string& title) {
+    context_->window.title = [NSString stringWithUTF8String:title.c_str()];
 }
 
 }

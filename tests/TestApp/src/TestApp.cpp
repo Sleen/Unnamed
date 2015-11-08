@@ -183,7 +183,7 @@ public:
         
         glUseProgram(program);
         // get location of uniforms
-        GLint uMvp = getUniLoc(program, "uMvp");
+        uMvp = getUniLoc(program, "uMvp");
     }
     GLint uMvp;
     void test() {

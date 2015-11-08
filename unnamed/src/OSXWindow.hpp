@@ -17,6 +17,7 @@ public:
 	void Close() override;
     int GetWidth() override;
     int GetHeight() override;
+    void SetTitle(const std::string& title) override;
 
 private:
     OSXWindowContext* context_ = nullptr;

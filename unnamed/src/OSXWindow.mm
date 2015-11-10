@@ -1,4 +1,6 @@
-#ifdef __APPLE__
+#include "Target.hpp"
+
+#if UNNAMED_TARGET_OSX
 
 #include "OSXWindow.hpp"
 

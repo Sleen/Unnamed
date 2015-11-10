@@ -1,4 +1,5 @@
 set(UNNAMED_SRC
+    src/Target.hpp
     src/ConsoleApplication.cpp
     src/ConsoleApplication.hpp
 	src/Application.cpp
@@ -6,6 +7,7 @@ set(UNNAMED_SRC
 	src/Configs.h
 	src/Main.cpp
 	src/OSXWindow.hpp
+	src/IOSWindow.hpp
     src/Unnamed.hpp
     src/Window.cpp
     src/Window.hpp
@@ -35,7 +37,11 @@ set(UNNAMED_SRC
 )
 
 if (APPLE)
-	set(UNNAMED_SRC ${UNNAMED_SRC} src/OSXWindow.mm)
+	set(UNNAMED_SRC 
+		${UNNAMED_SRC}
+		src/OSXWindow.mm
+		src/IOSWindow.mm
+	)
 
 endif ()
 

@@ -260,8 +260,8 @@ void main(){
 		if (pen.GetWidth() <= 0)
 			return;
 		glLineWidth(pen.GetWidth());
-#ifndef GLES
-		glPointSize(pen.GetWidth());
+#ifndef GL_ES
+		//glPointSize(pen.GetWidth());
 #endif
 		DrawBase(pen.GetBrush(), points, count, type, dimension);
 	}

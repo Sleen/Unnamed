@@ -2,18 +2,18 @@
 
 #include "Target.hpp"
 
-#if UNNAMED_TARGET_OSX
+#if UNNAMED_TARGET_IOS
 
 #include "Window.hpp"
 
 namespace unnamed {
 
-struct OSXWindowContext;
+struct IOSWindowContext;
     
-class OSXWindow : public Window {
+class IOSWindow : public Window {
 public:
-    OSXWindow(WindowOptions options);
-    virtual ~OSXWindow();
+    IOSWindow(WindowOptions options);
+    virtual ~IOSWindow();
 	bool Create() override;
 	void Run() override;
 	void Close() override;
@@ -21,8 +21,8 @@ public:
     int GetHeight() override;
     void SetTitle(const std::string& title) override;
 
-private:
-    OSXWindowContext* context_ = nullptr;
+//private:
+    IOSWindowContext* context_ = nullptr;
 };
 
 }

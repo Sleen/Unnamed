@@ -2,7 +2,9 @@
 
 #include "WinWindow.hpp"
 #include "OSXWindow.hpp"
+#include "IOSWindow.hpp"
 #include "Time.hpp"
+#include "Target.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -35,10 +37,12 @@ AppOptions* Application::Options() {
 }
     
     Window* Application::SetupWindow() {
-#ifdef _WIN32
+#if UNNAMED_TARGET_WINDOWS
         return new WinWindow(Options()->windowOptions);
-#elif defined __APPLE__
+#elif UNNAMED_TARGET_OSX
         return new OSXWindow(Options()->windowOptions);
+#elif UNNAMED_TARGET_IOS
+        return new IOSWindow(Options()->windowOptions);
 #endif
     }
 

@@ -9,7 +9,11 @@ set(SRC
 	)
 add_executable(${NAME} ${SRC})
 target_link_libraries(${NAME} unnamed)
-if(APPLE)
+
+if(IOS)
+	set(LINKER_FLAGS "-framework Foundation -framework UIKit -framework OpenGLES")
+	set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${LINKER_FLAGS}")
+elseif(APPLE)
 	set(LINKER_FLAGS "-framework Cocoa -framework OpenGL")
 	set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${LINKER_FLAGS}")
 endif()

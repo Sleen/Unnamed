@@ -1,5 +1,5 @@
 build/
-xcode/
+xcode*/
 vs/
 mingw/
 bin/

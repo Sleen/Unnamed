@@ -32,18 +32,23 @@ public:
 	TestApp() {}
 	~TestApp() {}
     
-	void OnPrepare() {
+    void OnStart() override {
+        Log::D("OnStart");
+    }
+    
+	void OnPrepare() override {
         prepareShader();
 	}
     
-    void OnDraw() {
+    void OnDraw() override {
         //    Graphics g;
         //    g.Begin();
         //    g.DrawLine(Color::Green, Vector2(10, 10), Vector2(100, 100));
         //    g.FillOval(Color::Blue, 500, 20, 300, 200);
         
         GetWindow()->SetTitle(std::to_string(Time::FPS()));
-
+        Log::V("FPS:%.1f", Time::FPS());
+        
         test();
         glCheckErrors();
     }
@@ -131,6 +136,9 @@ public:
         )";
         
         const char* fragmentShader = R"(
+#ifdef GL_ES
+        precision highp float;
+#endif
         
         varying vec3 vPosition;
         

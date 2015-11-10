@@ -5,7 +5,7 @@
 int main(int argc, char const *argv[])
 {
 	setlocale(LC_ALL, "");
-	
+    
 	unnamed::ConsoleApplication* instance = unnamed::ConsoleApplication::GetInstance();
 	
 	if (!instance) {
